@@ -261,13 +261,32 @@ Note: You may run this same command again to re-scan the repo and update the bas
 
 ### Detection: Auditing a Baseline
 
-Run the following command to audit `.secrets.baseline`, marking secrets as true postitives or false positives. Remove true positives from your codebase, revoking them if they've been leaked remotely.
+Run the following command to audit `.secrets.baseline`, marking secrets as true positives or false positives. Remove true positives from your codebase, revoking them if they've been leaked remotely.
 
 ```
 $ detect-secrets audit .secrets.baseline
+Secret:      1 of 80
+Filename:    test_data/baseline.file
+Secret Type: Secret Keyword
+----------
+59:    }
+60:  ],
+61:  "results": {
+62:    "config.env": [
+63:      {
+64:        "hashed_secret": "513e0a36963ae1e8431c041b744679ee578b7c44",
+65:        "is_verified": false,
+66:        "line_number": 1,
+67:        "type": "Base64 High Entropy String"
+68:      }
+69:    ],
+----------
+Is this a valid secret? i.e. not a false-positive (y)es, (n)o, (s)kip, (q)uit:
 ```
 
 Commit the `.secrets.baseline` file to your repo with remediated files after auditing.
+
+When interactively auditing a baseline, if you label a secret as a valid secret. It is expected that you have remediated that secret. This is intended for historical bookkeeping purposes and assumes that the user has revoked the token / secret since remediated tokens will still be viewable in the repo's commit history.
 
 ### Detection: Reducing False Positives during Baseline Scan
 
