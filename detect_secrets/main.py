@@ -233,6 +233,10 @@ def _get_exclude_files(old_baseline):
     :rtype: str|None
     """
     if old_baseline.get('exclude'):
+
+        if sys.platform.lower() == 'win32':
+            # always store results with Unix-like forward-slashes, for cross-platform compatibility
+            return old_baseline['exclude']['files'].replace('\\', '/')
         return old_baseline['exclude']['files']
     if old_baseline.get('exclude_regex'):
         return old_baseline['exclude_regex']
