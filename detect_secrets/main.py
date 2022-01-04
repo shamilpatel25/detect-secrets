@@ -196,6 +196,10 @@ def _perform_scan(args, plugins, automaton, word_list_hash):
             new_baseline,
         )
 
+    if sys.platform.lower() == 'win32':
+        # always store results with Unix-like forward-slashes, for cross-platform compatibility
+        new_baseline['exclude']['files'].replace('/', '\\')
+
     return new_baseline
 
 
