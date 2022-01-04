@@ -171,7 +171,12 @@ def _perform_scan(args, plugins, automaton, word_list_hash):
             not args.word_list_file
             and old_baseline.get('word_list')
         ):
-            args.word_list_file = old_baseline['word_list']['file']
+            word_list_file = old_baseline['word_list']['file']
+
+            if sys.platform.lower() == 'win32':
+                word_list_file = old_baseline['word_list']['file'].replace('/', '\\')
+
+            args.word_list_file = word_list_file
 
     # If we have knowledge of an existing baseline file, we should use
     # that knowledge and add it to our exclude_files regex.
@@ -195,10 +200,6 @@ def _perform_scan(args, plugins, automaton, word_list_hash):
             old_baseline,
             new_baseline,
         )
-
-    if sys.platform.lower() == 'win32':
-        # always store results with Unix-like forward-slashes, for cross-platform compatibility
-        new_baseline['exclude']['files'].replace('/', '\\')
 
     return new_baseline
 

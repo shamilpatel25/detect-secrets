@@ -304,14 +304,23 @@ class SecretsCollection:
         )
         plugins_used = sorted(plugins_used, key=lambda x: x['name'])
 
+        exclude_files = self.exclude_files
+        word_list_file = self.word_list_file
+
+        if sys.platform.lower() == 'win32':
+            # always store results with Unix-like forward-slashes, for cross-platform compatibility
+            exclude_files.replace('/', '\\')
+            word_list_file.replace('/', '\\')
+            results.replace('\\', '/')
+
         return {
             'generated_at': strftime('%Y-%m-%dT%H:%M:%SZ', gmtime()),
             'exclude': {
-                'files': self.exclude_files,
+                'files': exclude_files,
                 'lines': self.exclude_lines,
             },
             'word_list': {
-                'file': self.word_list_file,
+                'file': word_list_file,
                 'hash': self.word_list_hash,
             },
             'plugins_used': plugins_used,
@@ -335,11 +344,6 @@ class SecretsCollection:
 
         if not file_results:
             return
-
-        if sys.platform.lower() == 'win32':
-            # always store results with Unix-like forward-slashes, for cross-platform compatibility
-            filename = filename.replace('\\', '/')
-
 
         if filename not in self.data:
             self.data[filename] = file_results
